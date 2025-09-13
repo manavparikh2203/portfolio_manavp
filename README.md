@@ -1,1 +1,960 @@
-# portfolio_manavp
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manav Parikh | Portfolio</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+    
+    :root {
+      --primary: #0466c8;
+      --secondary: #0353a4;
+      --accent: #023e7d;
+      --light: #f8f9fa;
+      --dark: #001233;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--dark);
+      color: var(--light);
+      overflow-x: hidden;
+    }
+    
+    #canvas-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    /* Navigation */
+    nav {
+      position: fixed;
+      width: 100%;
+      padding: 20px 0;
+      z-index: 100;
+      background-color: rgba(0, 18, 51, 0.8);
+      backdrop-filter: blur(10px);
+    }
+    
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--light);
+    }
+    
+    .logo span {
+      color: var(--primary);
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 30px;
+    }
+    
+    .nav-links a {
+      text-decoration: none;
+      color: var(--light);
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+    
+    .menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--light);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    
+    /* Hero Section */
+    .hero {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+    
+    .hero-content {
+      width: 100%;
+      max-width: 800px;
+    }
+    
+    .hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    
+    .hero-title span {
+      color: var(--primary);
+      display: inline-block;
+    }
+    
+    .hero-subtitle {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      opacity: 0.8;
+    }
+    
+    .hero-cta {
+      display: flex;
+      gap: 20px;
+    }
+    
+    .btn {
+      padding: 12px 30px;
+      border-radius: 50px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary);
+      color: var(--light);
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--secondary);
+      transform: translateY(-3px);
+    }
+    
+    .btn-outline {
+      border: 2px solid var(--primary);
+      color: var(--primary);
+      background-color: transparent;
+    }
+    
+    .btn-outline:hover {
+      background-color: var(--primary);
+      color: var(--light);
+      transform: translateY(-3px);
+    }
+    
+    /* Section Styles */
+    .section {
+      padding: 100px 0;
+      position: relative;
+    }
+    
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.5rem;
+      margin-bottom: 50px;
+      text-align: center;
+      position: relative;
+    }
+    
+    .section-title::after {
+      content: '';
+      position: absolute;
+      width: 100px;
+      height: 3px;
+      background-color: var(--primary);
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    
+    /* About Section */
+    .about-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      align-items: center;
+    }
+    
+    .about-image {
+        position: relative;
+        border-radius: 20px;
+        overflow: hidden;
+        height: 800px; /* Adjust height as needed */
+        background-color: var(--secondary); /* Fallback background color */
+      }
+      
+      .about-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Maintain aspect ratio while covering the container */
+        object-position: center; /* Center the image within the container */
+        transition: transform 0.3s ease; /* Add a smooth hover effect */
+      }
+      
+      .about-image:hover img {
+        transform: scale(1.05); /* Slight zoom effect on hover */
+      }
+    
+    .about-text h3 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    
+    .about-text p {
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    
+    .skills-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 30px;
+    }
+    
+    .skill-item {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 10px 15px;
+      border-radius: 30px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    
+    .skill-item:hover {
+      background-color: var(--primary);
+      transform: translateY(-5px);
+    }
+    
+    
+    /* Projects Section */
+.projects-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 30px;
+  }
+  
+  .project-card {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+  }
+  
+  .project-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  }
+  
+  .project-image {
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .project-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+  
+  .project-card:hover .project-image img {
+    transform: scale(1.1);
+  }
+  
+  .project-content {
+    padding: 25px;
+  }
+  
+  .project-title {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+  
+  .project-description {
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .project-tag {
+    background-color: rgba(4, 102, 200, 0.2);
+    color: var(--primary);
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+  }
+    /* Experience Section */
+    .timeline {
+      position: relative;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .timeline::after {
+      content: '';
+      position: absolute;
+      width: 2px;
+      background-color: rgba(255, 255, 255, 0.2);
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      margin-left: -1px;
+    }
+    
+    .timeline-item {
+      padding: 10px 40px;
+      position: relative;
+      width: 50%;
+      box-sizing: border-box;
+    }
+    
+    .timeline-item:nth-child(odd) {
+      left: 0;
+    }
+    
+    .timeline-item:nth-child(even) {
+      left: 50%;
+    }
+    
+    .timeline-item::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: var(--primary);
+      border-radius: 50%;
+      top: 15px;
+      right: -10px;
+      z-index: 1;
+    }
+    
+    .timeline-item:nth-child(even)::after {
+      left: -10px;
+    }
+    
+    .timeline-content {
+      padding: 20px;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+    }
+    
+    .timeline-date {
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    
+    .timeline-title {
+      font-size: 1.2rem;
+      margin-bottom: 5px;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    
+    .timeline-description {
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    
+    /* Contact Section */
+    .contact-content {
+      display: grid;
+      grid-template-columns: 1fr;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .contact-info {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    .contact-methods {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 20px;
+    }
+    
+    .contact-method {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .contact-method a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    
+    /* Footer */
+    footer {
+      background-color: rgba(0, 0, 0, 0.3);
+      padding: 30px 0;
+      text-align: center;
+    }
+    /* Research Section */
+.research-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 50px;
+  }
+  
+  .research-card {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 25px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .research-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    border-color: var(--primary);
+  }
+  
+  .research-icon {
+    font-size: 2rem;
+    color: var(--primary);
+    margin-bottom: 20px;
+  }
+  
+  .research-content {
+    position: relative;
+    z-index: 2;
+  }
+  
+  .research-date {
+    font-size: 0.9rem;
+    color: var(--primary);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  
+  .research-title {
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+    font-family: 'Space Grotesk', sans-serif;
+    color: var(--light);
+  }
+  
+  .research-description {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .research-description ul {
+    list-style-type: disc;
+    padding-left: 20px;
+  }
+  
+  .research-description li {
+    margin-bottom: 10px;
+  }
+  
+  /* Add Font Awesome for icons */
+  @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
+    /* Responsive Design */
+    @media (max-width: 992px) {
+      .about-content,
+      .contact-content {
+        grid-template-columns: 1fr;
+      }
+      
+      .timeline::after {
+        left: 31px;
+      }
+      
+      .timeline-item {
+        width: 100%;
+        padding-left: 70px;
+        padding-right: 25px;
+      }
+      
+      .timeline-item:nth-child(even) {
+        left: 0;
+      }
+      
+      .timeline-item::after {
+        left: 21px;
+        right: auto;
+      }
+      
+      .timeline-item:nth-child(even)::after {
+        left: 21px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .menu-btn {
+        display: block;
+      }
+      
+      .nav-links {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: var(--dark);
+        padding: 20px;
+        flex-direction: column;
+        transform: translateY(-100%);
+        opacity: 0;
+        transition: all 0.3s ease;
+      }
+      
+      .nav-links.active {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      
+      .hero-title {
+        font-size: 2.5rem;
+      }
+      
+      .section-title {
+        font-size: 2rem;
+      }
+      
+      .projects-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+    <div id="canvas-container"></div>
+  
+    <!-- Navigation -->
+    <nav>
+      <div class="container nav-container">
+        <div class="logo">MANAV<span>.</span></div>
+        <div class="nav-links">
+          <a href="#home">Home</a>
+          <a href="#about">About</a>
+          <a href="#projects">Projects</a>
+          <a href="#research">Research</a>
+          <a href="#experience">Experience</a>
+          <a href="#contact">Contact</a>
+        </div>
+        <button class="menu-btn">≡</button>
+      </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+      <div class="container hero-content">
+        <h1 class="hero-title">Hi, I'm <span>Manav</span> Parikh</h1>
+        
+        <div class="hero-cta">
+          <a href="#projects" class="btn btn-primary">View Projects</a>
+          <a href="#contact" class="btn btn-outline">Get In Touch</a>
+        </div>
+      </div>
+    </section>
+    
+    <!-- About Section -->
+    <section id="about" class="section">
+      <div class="container">
+        <h2 class="section-title">About Me</h2>
+        <div class="about-content">
+          <div class="about-image">
+            <img src='DSC_9133 copy.jpg' alt="Manav Parikh">
+          </div>
+          <div class="about-text">
+            
+            <p>I am currently pursuing my Masters in Computer Science at New York University Courant Institute of Mathematical Sciences. I completed my Bachelors in Computer Science and Engineering with specialisation in Internet of Things from Vellore Institute of Technology with a CGPA of 9.37 .</p>
+            <p>My expertise spans across IoT systems, AI/ML applications, and full-stack development. I'm particularly interested in creating innovative solutions that leverage cutting-edge technologies to solve real-world problems.</p>
+            <h3>My Skills</h3>
+            <div class="skills-container">
+              <div class="skill-item">Python</div>
+              <div class="skill-item">React</div>
+              <div class="skill-item">Next.js/js</div>
+              <div class="skill-item">C/C++</div>
+              <div class="skill-item">Java</div>
+              <div class="skill-item">ML/AI</div>
+              <div class="skill-item">IoT</div>
+              <div class="skill-item">Flask</div>
+              <div class="skill-item">Arduino</div>
+              <div class="skill-item">MongoDB</div>
+              <div class="skill-item">Firebase</div>
+              <div class="skill-item">SQL</div>
+              <div class="skill-item">Contiki OS</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Projects Section -->
+<section id="projects" class="section">
+    <div class="container">
+      <h2 class="section-title">My Projects</h2>
+      <div class="projects-container">
+        <!-- Project 1: AI Mock Interview Platform -->
+        <div class="project-card">
+          <div class="project-image">
+            <img src="https://www.executivegrapevine.com/uploads/articles/story-job-candidate-caght-on-chatgpt.jpg" alt="AI Mock Interview Platform">
+          </div>
+          <div class="project-content">
+            <h3 class="project-title">AI Mock Interview Platform</h3>
+            <div class="project-tags">
+              <span class="project-tag">React</span>
+              <span class="project-tag">Next.js</span>
+              <span class="project-tag">AI</span>
+            </div>
+            <p class="project-description">A full-stack AI-powered mock interview platform that processes 500+ video responses with real-time AI feedback. Integrated an AI resume builder that improved user engagement by 40%.</p>
+          </div>
+        </div>
+  
+        <!-- Project 2: Smart City IoT Systems -->
+        <div class="project-card">
+          <div class="project-image">
+            <img src="https://www.scnsoft.com/blog-pictures/internet-of-things/iot-for-smart-city-merged.png" alt="Smart City IoT Systems">
+          </div>
+          <div class="project-content">
+            <h3 class="project-title">Smart City IoT Systems</h3>
+            <div class="project-tags">
+              <span class="project-tag">Arduino</span>
+              <span class="project-tag">NodeMCU</span>
+              <span class="project-tag">IoT</span>
+            </div>
+            <p class="project-description">Designed IoT systems for air quality, water, and healthcare management using Arduino and NodeMCU, processing real-time data from 10+ sensors with 85% accurate predictions.</p>
+          </div>
+        </div>
+  
+        <!-- Project 3: Full Stack E-Commerce Platform -->
+        <div class="project-card">
+          <div class="project-image">
+            <img src="https://media.licdn.com/dms/image/v2/D4E12AQHcFlL2PXEo9w/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1733237475312?e=2147483647&v=beta&t=21MvM3fkxjnrNq8lmNtwucmrV2j--RJ-0Syhh5VGWFQ" alt="Full Stack E-Commerce Platform">
+          </div>
+          <div class="project-content">
+            <h3 class="project-title"> Network Traffic Anomaly Detection</h3>
+            <div class="project-tags">
+              <span class="project-tag">Contiki OS</span>
+              <span class="project-tag">Machine Learning</span>
+              <span class="project-tag">Python</span>
+            </div>
+            <p class="project-description">Simulated normal and malicious IoT network traffic using Contiki OS to generate labeled datasets.
+ Extracted key features such as packet time and length for machine learning model training.
+ Developed an ensemble model achieving 96% accuracy in detecting malicious network activity</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+    
+   <!-- Research Section -->
+<section id="research" class="section">
+    <div class="container">
+      <h2 class="section-title">Research Experience</h2>
+      <div class="research-grid">
+        <!-- Research 1 -->
+       
+  
+        <!-- Research 2 -->
+        <div class="research-card">
+          <div class="research-icon">
+            <i class="fas fa-money-bill-wave"></i> <!-- Font Awesome icon for currency -->
+          </div>
+          <div class="research-content">
+            <div class="research-date">2023</div>
+            <h3 class="research-title">Evaluating CNNs for Fake Currency Identification</h3>
+            <div class="research-description">
+              <ul>
+                <li>Conducted a comparative analysis of CNN models (Inception V3, ResNet50, Xception, EfficientNet B0)</li>
+                <li>Achieved over 98% accuracy in counterfeit currency detection</li>
+                <li>Improved identification rate by 25% using data augmentation and fine-tuning</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Research 3 -->
+        <div class="research-card">
+          <div class="research-icon">
+            <i class="fas fa-lungs"></i> <!-- Font Awesome icon for healthcare -->
+          </div>
+          <div class="research-content">
+            <div class="research-date">2023</div>
+            <h3 class="research-title">Multi-class Ensemble Model for Lung Disease Classification</h3>
+            <div class="research-description">
+              <ul>
+                <li>Deployed an ensemble model using CNN, VGG16, ResNet50, and InceptionV3</li>
+                <li>Classified five lung disease categories with 85.93% accuracy</li>
+                <li>Achieved F1-scores of 0.96 for Coronavirus and 0.97 for Tuberculosis detection</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+    
+    <!-- Experience Section -->
+    <section id="experience" class="section">
+      <div class="container">
+        <h2 class="section-title">Experience</h2>
+        <div class="timeline">
+          <!-- Experience 1 -->
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <div class="timeline-date">Jan 2024 - Sept 2024</div>
+              <h3 class="timeline-title">Software Development Intern</h3>
+              <p class="timeline-subtitle">TenUp Software Services LLP</p>
+              <div class="timeline-description">
+                <ul>
+                  <li>Developed a resume parsing web service to extract structured data from resumes using NLP techniques. Enhanced entity
+ recognition accuracy by 4% through model tuning and post-processing improvements.
+ </li>
+                  <li>Manually masked car images to create high-quality labeled data for training an image classification model. Contributed to improved
+ model accuracy in predicting car makes and models.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <div class="timeline-date">Sept 2023 - Nov 2023</div>
+              <h3 class="timeline-title">Technical and Networking Intern</h3>
+              <p class="timeline-subtitle">Medide</p>
+              <div class="timeline-description">
+                <ul>
+                  <li>Compiled a comprehensive database of 50+ healthcare facilities</li>
+                  <li>Engineered a responsive healthcare website using HTML, CSS, JavaScript, Flask, and SQL</li>
+                  <li>Boosted user engagement by 25% through refined UI/UX design</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <div class="timeline-date">Aug 2023 - Sept 2023</div>
+              <h3 class="timeline-title">Software Development Intern</h3>
+              <p class="timeline-subtitle">TenUp Software Services LLP</p>
+              <div class="timeline-description">
+                <ul>
+                  <li>Refined AWS Rekognition model by 6% using custom labels and SageMaker</li>
+                  <li>Developed a Flask-based resume parser, leveraging NLP techniques to reduce error rates by 15%</li>
+                  <li>Initiated test case generation for an in-house application, reducing manual processing time by 40%</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Experience 2 -->
+          
+          
+          <!-- Experience 3 -->
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <div class="timeline-date">2022 - 2025</div>
+              <h3 class="timeline-title">Senior Core Lead</h3>
+              <p class="timeline-subtitle">Bulls and Bears Club</p>
+              <div class="timeline-description">
+                <ul>
+                  <li>Spearheaded the organization of over 150 students</li>
+                  <li>Managed and organized multiple speaker events, cultural and tech fest events with over 600 participants.</li>
+                  <li>Helped secure nomination for Best Technical Club by enhancing event participation and club outreach</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact" class="section">
+      <div class="container">
+        <h2 class="section-title">Get In Touch</h2>
+        <div class="contact-content">
+          <div class="contact-info">
+            <p>Feel free to reach out to me for collaborations, opportunities, or just to say hello!</p>
+            <div class="contact-methods">
+              <div class="contact-method">
+                <span>Email:</span>
+                <a href="mailto:parikhmanavh@gmail.com">parikhmanavh@gmail.com</a>
+              </div>
+              <div class="contact-method">
+                <span>LinkedIn:</span>
+                <a href="https://www.linkedin.com/in/manav-parikh-28a621381/" target="_blank">manav-parikh</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <p></p>
+      </div>
+    </footer>
+  
+  <script>
+    // 3D Background using Three.js
+    const initThreeScene = () => {
+      const container = document.getElementById('canvas-container');
+      
+      // Create scene
+      const scene = new THREE.Scene();
+      
+      // Camera setup
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.z = 30;
+      
+      // Renderer setup
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setClearColor(0x000000, 0);
+      container.appendChild(renderer.domElement);
+      
+      // Create particles
+      const particlesGeometry = new THREE.BufferGeometry();
+      const particlesCount = 2000;
+      
+      const posArray = new Float32Array(particlesCount * 3);
+      
+      for(let i = 0; i < particlesCount * 3; i++) {
+        posArray[i] = (Math.random() - 0.5) * 100;
+      }
+      
+      particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+      
+      // Material
+      const particlesMaterial = new THREE.PointsMaterial({
+        size: 0.2,
+        color: 0x0466c8,
+        transparent: true,
+        opacity: 0.8
+      });
+      
+      // Particles mesh
+      const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+      scene.add(particlesMesh);
+      
+      // Mouse move interactivity
+      let mouseX = 0;
+      let mouseY = 0;
+      
+      document.addEventListener('mousemove', (event) => {
+        mouseX = event.clientX / window.innerWidth - 0.5;
+        mouseY = event.clientY / window.innerHeight - 0.5;
+      });
+      
+      // Animation
+      const animate = () => {
+        requestAnimationFrame(animate);
+        
+        particlesMesh.rotation.y += 0.002;
+        
+        if (mouseX && mouseY) {
+          particlesMesh.rotation.x += mouseY * 0.005;
+          particlesMesh.rotation.y += mouseX * 0.005;
+        }
+        
+        renderer.render(scene, camera);
+      };
+      
+      // Handle window resize
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+      
+      animate();
+    };
+    
+    // Mobile menu toggle
+    const menuBtn = document.querySelector('.menu-btn');
+    const navLinks = document.querySelector('.nav-links');
+    
+    if (menuBtn) {
+      menuBtn.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+      });
+    }
+    
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          window.scrollTo({
+            top: target.offsetTop - 100,
+            behavior: 'smooth'
+          });
+          
+          // Close mobile menu if open
+          if (navLinks.classList.contains('active')) {
+            navLinks.classList.remove('active');
+          }
+        }
+      });
+    });
+    
+    // Change navbar background on scroll
+    window.addEventListener('scroll', () => {
+      const nav = document.querySelector('nav');
+      if (window.scrollY > 50) {
+        nav.style.backgroundColor = 'rgba(0, 18, 51, 0.9)';
+        nav.style.padding = '15px 0';
+      } else {
+        nav.style.backgroundColor = 'rgba(0, 18, 51, 0.8)';
+        nav.style.padding = '20px 0';
+      }
+    });
+    
+    // Initialize Three.js scene on window load
+    window.addEventListener('load', initThreeScene);
+  </script>
+</body>
+
+</html>
